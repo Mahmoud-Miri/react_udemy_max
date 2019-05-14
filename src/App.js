@@ -13,14 +13,20 @@ class App extends Component {
         showPersons: false
     };
 
-    nameChangedHandler = (event) => {
-        this.setState({
-            persons: [
-                {name: "Max", age: 25},
-                {name: event.target.value, age: 30},
-                {name: "Sarah", age: 35}
-            ]
+    nameChangedHandler = (event, id) => {
+        const personIndex = this.state.persons.findIndex(p => {
+            return p.id === id;
         });
+        //Since we don't want to change state directly (since a Person is a ref.)
+        // we create a copy of the person using the spread operator with the person
+        //object. ... copies everything to the new object
+        const person = {...this.state.persons[personIndex]};
+        person.name = event.target.value;
+
+        const persons = [...this.state.persons];
+        persons[personIndex] = person;
+
+        this.setState({persons: persons});
 
     };
 
@@ -35,8 +41,8 @@ class App extends Component {
         //and here we are not changing the pointer; we are changing the value
         //it points to.
         newPersons.splice(personIndex, 1);
-        this.setState({persons:newPersons})
-    }
+        this.setState({persons: newPersons})
+    };
 
     togglePersonsHandler = () => {
         const doesShow = this.state.showPersons;
@@ -64,6 +70,7 @@ class App extends Component {
                             name={aPerson.name}
                             age={aPerson.age}
                             key={aPerson.id}
+                            changed={(event)=>this.nameChangedHandler(event, aPerson.id)}
                         />
                     })}
                 </div>
