@@ -13,17 +13,6 @@ class App extends Component {
         showPersons: false
     };
 
-    switchNameHandler = (newName) => {
-        //DON't do this.  this.state.person[0].name = "Mahmoud";
-        this.setState({
-            persons: [
-                {name: newName, age: 25},
-                {name: "Mark", age: 30},
-                {name: "Sarah", age: 40}
-            ]
-        });
-    };
-
     nameChangedHandler = (event) => {
         this.setState({
             persons: [
@@ -34,6 +23,20 @@ class App extends Component {
         });
 
     };
+
+    deletePersonHandler = (personIndex) => {
+        //don't do: const newPersons = this.state.persons;
+        //use vanilla JS slice() to get a new (shallow) copy
+        // const newPersons = this.state.persons.slice();
+        //Or use ES6 Spread operator ...
+        const newPersons = [...this.state.persons];
+
+        //FYI, we are not changing a const here. Arrays are of reference type
+        //and here we are not changing the pointer; we are changing the value
+        //it points to.
+        newPersons.splice(personIndex, 1);
+        this.setState({persons:newPersons})
+    }
 
     togglePersonsHandler = () => {
         const doesShow = this.state.showPersons;
@@ -55,8 +58,9 @@ class App extends Component {
         if (this.state.showPersons) {
             persons = (
                 <div>
-                    {this.state.persons.map(aPerson =>{
+                    {this.state.persons.map((aPerson, index) =>{
                         return <Person
+                            click={()=>this.deletePersonHandler(index)}
                             name={aPerson.name}
                             age={aPerson.age}/>
                     })}
