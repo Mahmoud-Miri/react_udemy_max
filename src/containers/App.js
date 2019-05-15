@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
-import Person from '../components/Persons/Person/Person';
+import Persons from '../components/Persons/Persons';
 import Radium, {StyleRoot} from 'radium';
+import Cockpit from '../components/Cockpit/Cockpit';
 
 class App extends Component {
     state = {
@@ -68,19 +69,10 @@ class App extends Component {
 
         let persons = null;
         if (this.state.showPersons) {
-            persons = (
-                <div>
-                    {this.state.persons.map((aPerson, index) =>{
-                        return <Person
-                            click={()=>this.deletePersonHandler(index)}
-                            name={aPerson.name}
-                            age={aPerson.age}
-                            key={aPerson.id}
-                            changed={(event)=>this.nameChangedHandler(event, aPerson.id)}
-                        />
-                    })}
-                </div>
-            );
+            persons = <Persons persons={this.state.persons}
+                               clicked={this.deletePersonHandler}
+                               changed={this.nameChangedHandler}
+            />;
             style.backgroundColor = 'red';
             style[':hover'] = {
                 backgroundColor: 'salmon',
@@ -88,20 +80,13 @@ class App extends Component {
             }
         }
 
-        const classes = [];
-        if (this.state.persons.length <= 2) {
-            classes.push('red');
-        }
-        if (this.state.persons.length <= 1) {
-            classes.push('bold');
-        }
-
         return (
             <StyleRoot>
                 <div className="App">
-                    <h1>Hi. I'm a React app</h1>
-                    <p className={classes.join(" ")}>This is working!</p>
-                    <button style={style} onClick={this.togglePersonsHandler}>Toggle Persons</button>
+                    <Cockpit showPerson={this.state.showPersons}
+                             person={this.state.persons}
+                             clicked={this.togglePersonsHandler}
+                    />
                     {persons}
                 </div>
             </StyleRoot>
